@@ -20,22 +20,20 @@ class OneFragment: Fragment(R.layout.fragment_one){
     {
         super.onViewCreated(view, savedInstanceState)
 
-        val binding= FragmentOneBinding.bind(view)
+        val binding = FragmentOneBinding.bind(view)
 
-        val viewModel= OneViewModel(context!!)
+        val viewModel = OneViewModel(context!!)
 
-        val layoutManager= LinearLayoutManager(context!!)
-        val dividerItemDecoration=
-            DividerItemDecoration(context!!, layoutManager.orientation)
-        val adapter= CustomAdapter(object : CustomAdapter.OnItemClickListener{
+        val layoutManager = LinearLayoutManager(context!!)
+        val dividerItemDecoration = DividerItemDecoration(context!!, layoutManager.orientation)
+        val adapter = CustomAdapter(object : CustomAdapter.OnItemClickListener{
             override fun itemClick(item: item){
                 gotoRepositoryFragment(item)
             }
         })
 
-        binding.searchInputText
-            .setOnEditorActionListener{ editText, action, _ ->
-                if (action== EditorInfo.IME_ACTION_SEARCH){
+        binding.searchInputText.setOnEditorActionListener{ editText, action, _ ->
+                if (action == EditorInfo.IME_ACTION_SEARCH){
                     editText.text.toString().let {
                         viewModel.searchResults(it).apply{
                             adapter.submitList(this)
@@ -47,16 +45,15 @@ class OneFragment: Fragment(R.layout.fragment_one){
             }
 
         binding.recyclerView.also{
-            it.layoutManager= layoutManager
+            it.layoutManager = layoutManager
             it.addItemDecoration(dividerItemDecoration)
-            it.adapter= adapter
+            it.adapter = adapter
         }
     }
 
     fun gotoRepositoryFragment(item: item)
     {
-        val action= OneFragmentDirections
-            .actionRepositoriesFragmentToRepositoryFragment(item= item)
+        val action = OneFragmentDirections.actionRepositoriesFragmentToRepositoryFragment(item = item)
         findNavController().navigate(action)
     }
 }
@@ -64,12 +61,12 @@ class OneFragment: Fragment(R.layout.fragment_one){
 val diff_util= object: DiffUtil.ItemCallback<item>(){
     override fun areItemsTheSame(oldItem: item, newItem: item): Boolean
     {
-        return oldItem.name== newItem.name
+        return oldItem.name == newItem.name
     }
 
     override fun areContentsTheSame(oldItem: item, newItem: item): Boolean
     {
-        return oldItem== newItem
+        return oldItem == newItem
     }
 
 }
@@ -86,16 +83,14 @@ class CustomAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder
     {
-    	val view= LayoutInflater.from(parent.context)
-            .inflate(R.layout.layout_item, parent, false)
+    	val view = LayoutInflater.from(parent.context).inflate(R.layout.layout_item, parent, false)
     	return ViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int)
     {
-    	val item= getItem(position)
-        (holder.itemView.findViewById<View>(R.id.repositoryNameView) as TextView).text=
-            item.name
+    	val item = getItem(position)
+        (holder.itemView.findViewById<View>(R.id.repositoryNameView) as TextView).text = item.name
 
     	holder.itemView.setOnClickListener{
      		itemClickListener.itemClick(item)
