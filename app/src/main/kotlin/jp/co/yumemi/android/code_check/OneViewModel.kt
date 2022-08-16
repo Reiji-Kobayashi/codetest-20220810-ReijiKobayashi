@@ -3,7 +3,6 @@
  */
 package jp.co.yumemi.android.code_check
 
-import android.content.Context
 import android.os.Parcelable
 import androidx.lifecycle.ViewModel
 import io.ktor.client.*
@@ -22,7 +21,7 @@ import java.util.*
 /**
  * OneFragment で使う
  */
-class OneViewModel(val context: Context) : ViewModel() {
+class OneViewModel : ViewModel() {
 
     // 検索結果
     fun searchResults(inputText: String): List<item> = runBlocking {
@@ -63,7 +62,7 @@ class OneViewModel(val context: Context) : ViewModel() {
                     item(
                         name = name,
                         ownerIconUrl = ownerIconUrl,
-                        language = context.getString(R.string.written_language, language),
+                        language = setLanguageInfo(language),
                         stargazersCount = stargazersCount,
                         watchersCount = watchersCount,
                         forksCount = forksCount,
@@ -78,6 +77,11 @@ class OneViewModel(val context: Context) : ViewModel() {
 
             return@async items.toList()
         }.await()
+    }
+
+    // stirings.xmlからのリソース取得を経由した手法の代替手段
+    private fun setLanguageInfo(language: String): String{
+        return "Written in $language"
     }
 }
 
