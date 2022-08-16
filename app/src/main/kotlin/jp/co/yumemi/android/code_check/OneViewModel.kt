@@ -3,7 +3,6 @@
  */
 package jp.co.yumemi.android.code_check
 
-import android.content.Context
 import android.os.Parcelable
 import androidx.lifecycle.ViewModel
 import io.ktor.client.*
@@ -20,36 +19,40 @@ import org.json.JSONObject
 import java.util.*
 
 /**
- * TwoFragment で使う
+ * OneFragment で使う
  */
-class OneViewModel(
-    val context: Context
-) : ViewModel() {
+class OneViewModel : ViewModel() {
 
     // 検索結果
     fun searchResults(inputText: String): List<item> = runBlocking {
         val client = HttpClient(Android)
 
-        return@runBlocking GlobalScope.async {
-            val response: HttpResponse = client?.get("https://api.github.com/search/repositories") {
-                header("Accept", "application/vnd.github.v3+json")
-                parameter("q", inputText)
-            }
+        val response: HttpResponse = client?.get("https://api.github.com/search/repositories") {
+            header("Accept", "application/vnd.github.v3+json")
+            parameter("q", inputText)
+        }
 
-            val jsonBody = JSONObject(response.receive<String>())
+        val jsonBody = JSONObject(response.receive<String>())
 
-            val jsonItems = jsonBody.optJSONArray("items")!!
+        val jsonItems = jsonBody.optJSONArray("items")
 
-            val items = mutableListOf<item>()
+        val items = mutableListOf<item>()
 
-            /**
-             * アイテムの個数分ループする
-             */
+        /**
+         * アイテムの個数分ループする
+         */
+        if (jsonItems != null) {
             for (i in 0 until jsonItems.length()) {
-                val jsonItem = jsonItems.optJSONObject(i)!!
+                val jsonItem = jsonItems.optJSONObject(i)
                 val name = jsonItem.optString("full_name")
-                val ownerIconUrl = jsonItem.optJSONObject("owner")!!.optString("avatar_url")
-                val language = jsonItem.optString("language")
+                var ownerIconUrl = jsonItem.optJSONObject("owner").optString("avatar_url")
+                if (ownerIconUrl == "null") {
+                    ownerIconUrl = "@drawable/jetbrains"
+                }
+                var language = jsonItem.optString("language")
+                if (language == "null") {
+                    language = "no language"
+                }
                 val stargazersCount = jsonItem.optLong("stargazers_count")
                 val watchersCount = jsonItem.optLong("watchers_count")
                 val forksCount = jsonItem.optLong("forks_conut")
@@ -59,7 +62,7 @@ class OneViewModel(
                     item(
                         name = name,
                         ownerIconUrl = ownerIconUrl,
-                        language = context.getString(R.string.written_language, language),
+                        language = setLanguageInfo(language),
                         stargazersCount = stargazersCount,
                         watchersCount = watchersCount,
                         forksCount = forksCount,
@@ -67,11 +70,18 @@ class OneViewModel(
                     )
                 )
             }
+        }
 
+        return@runBlocking GlobalScope.async {
             lastSearchDate = Date()
 
             return@async items.toList()
         }.await()
+    }
+
+    // stirings.xmlからのリソース取得を経由した手法の代替手段
+    private fun setLanguageInfo(language: String): String{
+        return "Written in $language"
     }
 }
 
