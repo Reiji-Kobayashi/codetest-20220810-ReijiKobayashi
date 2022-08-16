@@ -1,48 +1,89 @@
-# 株式会社ゆめみ Android エンジニアコードチェック課題
+# 株式会社ゆめみ Android エンジニアコードチェック課題 開発記録 電気通信大学 小林怜史
 
-## 概要
+## 開発環境
+- macOS: 11.6(Big Sur)
+- IDE: Android Studio Chipmunk | 2021.2.1 Patch 1
+- Kotlin: 1.7.10s
+- gradle: 7.0.2
+- minSdk 23
+- targetSDK: 31
 
-本プロジェクトは株式会社ゆめみ（以下弊社）が、弊社に Android エンジニアを希望する方に出す課題のベースプロジェクトです。本課題が与えられた方は、下記の概要を詳しく読んだ上で課題を取り組んでください。
+## ブランチの概要
+- 参考URL
+  - https://qiita.com/y-okudera/items/0b57830d2f56d1d51692
+  - https://qiita.com/KosukeSone/items/514dd24828b485c69a05
+- `main`：メインブランチ、`release`を統合
+- `release`：`develop`を統合
+- `develop`：後述する2つの修正の統合
+- `fix/01 ~ 04`：課題（issue）毎の修正（機能追加における`feature/`に該当）
+- `hotfix`：全ての`fix/`を`develop`に統合後の修正を行う
 
-## アプリ仕様
+## 開発履歴
+### issue1
+- https://kotlinlang.org/docs/coding-conventions.html を参考にしつつ、目視で確認して修正。
 
-本アプリは GitHub のリポジトリを検索するアプリです。
+### issue2-1
+- エラー文：`Use requireContext() instead of context!!`
+- エラー文に従い`context!!`を`requireContext()`に変更
 
-<img src="docs/app.gif" width="320">
+### issue2-2
+- 参考URL
+  - https://www.project-unknown.jp/entry/2017/09/15/083241
+  - https://runebook.dev/ja/docs/kotlin/docs/reference/typecasts
 
-### 環境
+### issue2-3
+- 該当変数`lastSearchDate`は即座に再代入が行われず、null許容型にしない必要もないため、null許容型に変更
 
-- IDE：Android Studio Arctic Fox | 2020.3.1 Patch 1
-- Kotlin：1.5.31
-- Java：11
-- Gradle：7.0.1
-- minSdk：23
-- targetSdk：31
+### issue2-4
+Strの`"null"`の握りつぶしが行われている部分を修正
+該当変数を`val`から`var`に変更し、if文で修正できるようにした。
 
-※ ライブラリの利用はオープンソースのものに限ります。
+### issue2-5
+commitメッセージに記述していないが、`"null"`の握りつぶしがあった部分も追加で修正
 
-### 動作
+### issue3-1
+- Warning文
+  - `Do not concatenate text displayed with 'setText'. Use resource string with placeholders.`
+  - `String literal in 'setText' can not be translated. Use Android resources instead.`
+- Android Studio側の指示に従い、`@SuppressLint("SetTextI18n")`の挿入で解決
+- 事前の文字列を格納する変数に代入して、その変数を用いる方法も考えられるが、~~コードが長くなりそうなので却下~~
+  - SDKのバージョンに依存しているWarning文を表示しないようにしているだけで、実質的な解決になっていない
 
-1. 何かしらのキーワードを入力
-2. GitHub API（`search/repositories`）でリポジトリを検索し、結果一覧を概要（リポジトリ名）で表示
-3. 特定の結果を選択したら、該当リポジトリの詳細（リポジトリ名、オーナーアイコン、プロジェクト言語、Star 数、Watcher 数、Fork 数、Issue 数）を表示
+### issue3-2
+- Warning文：`Hardcoded string "", should use (@string() resource`
+- UIパーツにそのままテキスト入力をせず、`res/values/string.xml`に文字列を用意し、それをUIパーツ側で利用するようにする。
 
-## 課題取り組み方法
+### issue3-3
+- `@SuppressLint`SDKのバージョンに依存しているWarning文を表示しないようにしているだけで、実質的な解決になっていない
+- 事前の文字列を格納する変数に代入して、その変数を用いる方法を採用
 
-Issues を確認した上、本プロジェクトを [**Duplicate** してください](https://help.github.com/en/github/creating-cloning-and-archiving-repositories/duplicating-a-repository)（Fork しないようにしてください。必要ならプライベートリポジトリにしても大丈夫です）。今後のコミットは全てご自身のリポジトリで行ってください。
+### issue3-4
+- 参考URL
+  - https://qiita.com/uny/items/1c1cf8e308bc68ea9f92
+  - https://stackoverflow.com/questions/47628646/how-should-i-get-resourcesr-string-in-viewmodel-in-android-mvvm-and-databindi
+- Warning文：`This field leaks a context object`
+- 色々試した中、`AndroidViewModel`を使用した方法が一番早く解決した
+- 今回の`context`の使用は`string.xml`の参照のみなので問題なさそうだが、今後の開発を考慮しても有効かどうかは不明
 
-コードチェックの課題 Issue は全て [`課題`](https://github.com/yumemi-inc/android-engineer-codecheck/milestone/1) Milestone がついており、難易度に応じて Label が [`初級`](https://github.com/yumemi-inc/android-engineer-codecheck/issues?q=is%3Aopen+is%3Aissue+label%3A初級+milestone%3A課題)、[`中級`](https://github.com/yumemi-inc/android-engineer-codecheck/issues?q=is%3Aopen+is%3Aissue+label%3A中級+milestone%3A課題+) と [`ボーナス`](https://github.com/yumemi-inc/android-engineer-codecheck/issues?q=is%3Aopen+is%3Aissue+label%3Aボーナス+milestone%3A課題+) に分けられています。課題の必須／選択は下記の表とします。
+### issue3-5
+- issue3-5だと`OneFragment.kt`のインスタンス宣言で問題が生じる
+- 以下の理由で新たに関数を使用した文字列を作成を行なった
+  - contextを使用している処理が1つだけであり、他の手法でのメモリリーク解決のコストが高いため
+  - 作成する文字列が短く、平易であるため
 
-|   | 初級 | 中級 | ボーナス
-|--:|:--:|:--:|:--:|
-| 新卒／未経験者 | 必須 | 選択 | 選択 |
-| 中途／経験者 | 必須 | 必須 | 選択 |
+### issue4-1
+- 2つのクラスが混在したファイルから1つのクラスを新規ファイルに移動
 
-課題 Issueをご自身のリポジトリーにコピーするGitHub Actionsをご用意しております。  
-[こちらのWorkflow](./.github/workflows/copy-issues.yml)を[手動でトリガーする](https://docs.github.com/ja/actions/managing-workflow-runs/manually-running-a-workflow)ことでコピーできますのでご活用下さい。
+## 備忘録
+### githubへのpush取り消し（履歴）
+- コードチェックと無関係の個人ファイルを誤ってcommitしたため使用
+- issue2を最初からやり直すため使用
 
-課題が完成したら、リポジトリのアドレスを教えてください。
-
-## 参考記事
-
-提出された課題の評価ポイントに関しては、[こちらの記事](https://qiita.com/blendthink/items/aa70b8b3106fb4e3555f)に詳しく書かれてありますので、ぜひご覧ください。
+### GitHubへのcommitの取り消し（手法）
+参考URL
+- https://techtechmedia.com/cancel-remote-commit-git/
+- https://qiita.com/S42100254h/items/db435c98c2fc9d4a68c2
+1. GitHubにて戻し先のcommitIDを調べる
+2. `git reset --hard commitID`でローカルリポジトリのcommitの取り消し
+3. `git push -f origin commitID:branch_name`でGitHubリポジトリのcommitの取り消し
+4. `git push origin branch_name`で戻し先から新たにcommit
