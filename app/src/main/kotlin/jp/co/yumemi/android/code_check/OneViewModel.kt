@@ -3,9 +3,8 @@
  */
 package jp.co.yumemi.android.code_check
 
-import android.app.Application
 import android.os.Parcelable
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.android.*
@@ -22,7 +21,7 @@ import java.util.*
 /**
  * OneFragment で使う
  */
-class OneViewModel(application: Application) : AndroidViewModel(application) {
+class OneViewModel : ViewModel() {
 
     // 検索結果
     fun searchResults(inputText: String): List<item> = runBlocking {
@@ -63,7 +62,7 @@ class OneViewModel(application: Application) : AndroidViewModel(application) {
                     item(
                         name = name,
                         ownerIconUrl = ownerIconUrl,
-                        language = getApplication<Application>().resources.getString(R.string.written_language, language),
+                        language = setLanguageInfo(language),
                         stargazersCount = stargazersCount,
                         watchersCount = watchersCount,
                         forksCount = forksCount,
@@ -78,6 +77,11 @@ class OneViewModel(application: Application) : AndroidViewModel(application) {
 
             return@async items.toList()
         }.await()
+    }
+
+    // stirings.xmlからのリソース取得を経由した手法の代替手段
+    private fun setLanguageInfo(language: String): String{
+        return "Written in $language"
     }
 }
 
