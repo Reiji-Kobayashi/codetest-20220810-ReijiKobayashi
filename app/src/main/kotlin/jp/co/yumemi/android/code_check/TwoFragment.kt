@@ -33,12 +33,12 @@ class TwoFragment : Fragment(R.layout.fragment_two) {
         val forksInfo = "${item.forksCount} forks"
         val openIssuesInfo = "${item.openIssuesCount} open issues"
 
-        _binding.ownerIconView.load(item.ownerIconUrl);
-        _binding.nameView.text = item.name;
-        _binding.languageView.text = item.language;
-        _binding.starsView.text = starsInfo;
-        _binding.watchersView.text = watchersInfo;
-        _binding.forksView.text = forksInfo;
-        _binding.openIssuesView.text = openIssuesInfo;
+        _binding.ownerIconView.load(item.ownerIconUrl)
+        _binding.nameView.text = item.name
+        _binding.languageView.text = item.language
+        _binding.starsView.text = starsInfo
+        _binding.watchersView.text = watchersInfo
+        _binding.forksView.text = forksInfo
+        _binding.openIssuesView.text = openIssuesInfo
     }
 }
