@@ -26,7 +26,7 @@ class TwoFragment : Fragment(R.layout.fragment_two) {
 
         binding = FragmentTwoBinding.bind(view)
 
-        var item = args.item
+        val item = args.item
 
         val starsInfo = "${item.stargazersCount} stars"
         val watchersInfo = "${item.watchersCount} watchers"
