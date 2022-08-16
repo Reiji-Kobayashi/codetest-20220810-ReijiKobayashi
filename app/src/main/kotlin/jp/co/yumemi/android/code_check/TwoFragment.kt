@@ -3,6 +3,7 @@
  */
 package jp.co.yumemi.android.code_check
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -19,6 +20,7 @@ class TwoFragment : Fragment(R.layout.fragment_two) {
     private var binding: FragmentTwoBinding? = null
     private val _binding get() = binding!!
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
