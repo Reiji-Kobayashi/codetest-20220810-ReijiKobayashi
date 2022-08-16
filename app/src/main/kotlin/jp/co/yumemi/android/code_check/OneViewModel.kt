@@ -35,34 +35,42 @@ class OneViewModel(val context: Context) : ViewModel() {
 
         val jsonBody = JSONObject(response.receive<String>())
 
-        val jsonItems = jsonBody.optJSONArray("items")!!
+        val jsonItems = jsonBody.optJSONArray("items")
 
         val items = mutableListOf<item>()
 
         /**
          * アイテムの個数分ループする
          */
-        for (i in 0 until jsonItems.length()) {
-            val jsonItem = jsonItems.optJSONObject(i)!!
-            val name = jsonItem.optString("full_name")
-            val ownerIconUrl = jsonItem.optJSONObject("owner")!!.optString("avatar_url")
-            val language = jsonItem.optString("language")
-            val stargazersCount = jsonItem.optLong("stargazers_count")
-            val watchersCount = jsonItem.optLong("watchers_count")
-            val forksCount = jsonItem.optLong("forks_conut")
-            val openIssuesCount = jsonItem.optLong("open_issues_count")
+        if (jsonItems != null) {
+            for (i in 0 until jsonItems.length()) {
+                val jsonItem = jsonItems.optJSONObject(i)
+                val name = jsonItem.optString("full_name")
+                var ownerIconUrl = jsonItem.optJSONObject("owner").optString("avatar_url")
+                if (ownerIconUrl == "null") {
+                    ownerIconUrl = "@drawable/jetbrains"
+                }
+                var language = jsonItem.optString("language")
+                if (language == "null") {
+                    language = "no language"
+                }
+                val stargazersCount = jsonItem.optLong("stargazers_count")
+                val watchersCount = jsonItem.optLong("watchers_count")
+                val forksCount = jsonItem.optLong("forks_conut")
+                val openIssuesCount = jsonItem.optLong("open_issues_count")
 
-            items.add(
-                item(
-                    name = name,
-                    ownerIconUrl = ownerIconUrl,
-                    language = context.getString(R.string.written_language, language),
-                    stargazersCount = stargazersCount,
-                    watchersCount = watchersCount,
-                    forksCount = forksCount,
-                    openIssuesCount = openIssuesCount
+                items.add(
+                    item(
+                        name = name,
+                        ownerIconUrl = ownerIconUrl,
+                        language = context.getString(R.string.written_language, language),
+                        stargazersCount = stargazersCount,
+                        watchersCount = watchersCount,
+                        forksCount = forksCount,
+                        openIssuesCount = openIssuesCount
+                    )
                 )
-            )
+            }
         }
 
         return@runBlocking GlobalScope.async {
