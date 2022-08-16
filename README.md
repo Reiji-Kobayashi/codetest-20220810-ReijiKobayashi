@@ -1,13 +1,22 @@
-#　株式会社ゆめみ Android エンジニアコードチェック課題 開発記録 電気通信大学 小林怜史
+# 株式会社ゆめみ Android エンジニアコードチェック課題 開発記録 電気通信大学 小林怜史
 
 ## 開発環境
 - macOS: 11.6(Big Sur)
 - IDE: Android Studio Chipmunk | 2021.2.1 Patch 1
-- Kotlin: 1.7.10
--
+- Kotlin: 1.7.10s
 - gradle: 7.0.2
 - minSdk 23
 - targetSDK: 31
+
+## ブランチの概要
+- 参考URL
+  - https://qiita.com/y-okudera/items/0b57830d2f56d1d51692
+  - https://qiita.com/KosukeSone/items/514dd24828b485c69a05
+- `main`：メインブランチ、`release`を統合
+- `release`：`develop`を統合
+- `develop`：後述する2つの修正の統合
+- `fix/01 ~ 04`：課題（issue）毎の修正（機能追加における`feature/`に該当）
+- `hotfix`：全ての`fix/`を`develop`に統合後の修正を行う
 
 ## 開発履歴
 ### issue1
